@@ -2,7 +2,6 @@
 
 import * as express from 'express';
 import cookieParser = require('cookie-parser');
-import bodyParser = require('body-parser');
 import cors = require('cors');
 import { SwaggerUI } from './swagger.ui';
 import { SwaggerRouter } from './swagger.router';
@@ -32,14 +31,12 @@ export class ExpressAppConfig {
         const spec = fs.readFileSync(definitionPath, 'utf8');
         const swaggerDoc = jsyaml.safeLoad(spec);
 
-        this.app.use(bodyParser.urlencoded());
-        this.app.use(bodyParser.text());
-        this.app.use(bodyParser.json());
-        this.app.use(bodyParser.raw({ type: 'application/pdf' }));
+        this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
+        this.app.use(express.text({ limit: '50mb' }));
+        this.app.use(express.json({ limit: '50mb' }));
+        this.app.use(express.raw({ limit: '50mb', type: 'application/pdf' }));
 
         this.app.use(this.configureLogger(appOptions.logging));
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: false }));
         this.app.use(cookieParser());
 
         const swaggerUi = new SwaggerUI(swaggerDoc, appOptions.swaggerUI);
