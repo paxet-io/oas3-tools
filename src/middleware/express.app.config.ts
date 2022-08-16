@@ -29,7 +29,7 @@ export class ExpressAppConfig {
     		this.app.use(cors(appOptions.cors));
         
         const spec = fs.readFileSync(definitionPath, 'utf8');
-        const swaggerDoc = jsyaml.safeLoad(spec);
+        const swaggerDoc = jsyaml.load(spec);
 
         this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
         this.app.use(express.text({ limit: '50mb' }));
