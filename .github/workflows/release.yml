@@ -1,0 +1,29 @@
+# Creates a release from a tagged commit
+name: Create Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          always-auth: true
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+          scope: '@paxet'
+      - name: Install dependencies from package-lock.json
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Publish package on NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
